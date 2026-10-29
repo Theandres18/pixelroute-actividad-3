@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>PixelRoute.Domain</RootNamespace>
+  </PropertyGroup>
+</Project>
