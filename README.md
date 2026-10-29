@@ -85,7 +85,7 @@ Architecture.md
 Esta actividad evalúa el **diseño**. No incluye persistencia real ni integraciones externas, que corresponden a la Actividad 4.
 
 ## Video de sustentación
-_(pegar aquí el enlace de YouTube, Google Drive o Teams cuando esté publicado)_
+_(https://youtu.be/1ShIcLr3U24?si=QEavwI7avUhfPgDr)_
 
 ## Autor
 Andrés Barrera Claros
