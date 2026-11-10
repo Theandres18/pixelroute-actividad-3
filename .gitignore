@@ -4,3 +4,7 @@ obj/
 *.user
 *.suo
 TestResults/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
