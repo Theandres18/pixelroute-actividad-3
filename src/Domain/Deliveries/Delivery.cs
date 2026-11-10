@@ -34,6 +34,12 @@ public sealed class Delivery
 
     public DateTimeOffset? AssignedAt { get; private set; }
 
+    /// <summary>
+    /// Versión del agregado para control de concurrencia optimista.
+    /// 0 significa "aún no persistida". La gestiona el repositorio (ver ADR-006).
+    /// </summary>
+    public int Version { get; private set; }
+
     public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     /// <summary>Asigna un repartidor. Protege INV-01, INV-02, INV-04 e INV-05.</summary>
@@ -99,4 +105,43 @@ public sealed class Delivery
     }
 
     public void ClearDomainEvents() => _domainEvents.Clear();
+
+    /// <summary>El repositorio informa la nueva versión después de guardar con éxito.</summary>
+    public void MarkPersisted(int version) => Version = version;
+
+    /// <summary>
+    /// Reconstruye una entrega ya existente (por ejemplo, leída de la base de datos).
+    /// Verifica que el estado y el repartidor sean coherentes (INV-03); no genera eventos.
+    /// </summary>
+    public static Delivery Restore(
+        DeliveryId id,
+        OrderId orderId,
+        DeliveryAddress address,
+        DeliveryPromise promise,
+        DeliveryStatus status,
+        CourierId? assignedCourierId,
+        DateTimeOffset? assignedAt,
+        int version)
+    {
+        var requiresCourier = status is DeliveryStatus.Assigned or DeliveryStatus.InRoute;
+        var forbidsCourier = status is DeliveryStatus.Pending or DeliveryStatus.Cancelled;
+
+        if (requiresCourier && assignedCourierId is null)
+        {
+            throw new DomainException($"La entrega {id} en estado {status} debe tener un repartidor.");
+        }
+
+        if (forbidsCourier && assignedCourierId is not null)
+        {
+            throw new DomainException($"La entrega {id} en estado {status} no puede tener repartidor.");
+        }
+
+        return new Delivery(id, orderId, address, promise)
+        {
+            Status = status,
+            AssignedCourierId = assignedCourierId,
+            AssignedAt = assignedAt,
+            Version = version
+        };
+    }
 }
