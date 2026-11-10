@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <RootNamespace>PixelRoute.Api</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Application\PixelRoute.Application.csproj" />
+    <ProjectReference Include="..\Infrastructure\PixelRoute.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

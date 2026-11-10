@@ -1,0 +1,35 @@
+### Requiere la extensión "REST Client" de VS Code. La API debe estar corriendo (dotnet run --project src/Api).
+@baseUrl = http://localhost:5080
+@apiKey = dev-dispatcher-key
+
+### 1. Crear una entrega
+POST {{baseUrl}}/api/v1/deliveries
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+X-Correlation-Id: demo-001
+
+{
+  "orderId": "aaaaaaaa-0000-0000-0000-000000000001",
+  "address": "Calle 10 # 5-20, Barrio Centro"
+}
+
+### 2. Asignar el repartidor demo 1 (reemplaza DELIVERY_ID por el valor devuelto en el paso 1)
+POST {{baseUrl}}/api/v1/deliveries/DELIVERY_ID/assign-courier
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+X-Correlation-Id: demo-002
+
+{
+  "courierId": "11111111-1111-1111-1111-111111111111"
+}
+
+### 3. Consultar la entrega
+GET {{baseUrl}}/api/v1/deliveries/DELIVERY_ID
+X-Api-Key: {{apiKey}}
+
+### 4. Mensajes fallidos
+GET {{baseUrl}}/api/v1/admin/dead-letters
+X-Api-Key: {{apiKey}}
+
+### 5. Salud del servicio (sin clave)
+GET {{baseUrl}}/health
